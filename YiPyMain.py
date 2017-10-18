@@ -24,6 +24,8 @@ class Movie(object):
             self.quality = '720p'
         elif '[1080p]' in self.title:
             self.quality = '1080p'
+        elif '[3D]' in self.title:
+            self.quality = '3D'
         else:
             self.quality = None
 
@@ -47,11 +49,44 @@ def load_rss(rss_feed):
     """
     Reads the RSS feed of YTS
     :param rss_feed:
-    :return:
+    :return: feedparser.FeedParserDict
     """
 
     return feedparser.parse(rss_feed)
 
 
+def generate_movie_list(yts_rss):
+    """
+    Given a parsed YTS RSS, this function will generate a list of movies using the Movie class
+    :param yts_rss:
+    :return: List of Movie objects
+    """
+
+    movie_list = []
+    for idx, m in enumerate(yts_rss.entries):
+        movie_list.append(Movie(m))
+
+    return movie_list
+
+
+def filter_movie_list(movie_list, quality='1080p'):
+    """
+    Filters the given movie list according to the passed parameters
+    :param quality:
+    :return:
+    """
+
+    filtered_list = []
+    for idx, m in enumerate(movie_list):
+        if m.quality == quality:
+            filtered_list.append(m)
+
+    return filtered_list
+
 if __name__ == '__main__':
     ytsRSS = load_rss('https://yts.ag/rss')
+    movieList = generate_movie_list(ytsRSS)
+    hd = filter_movie_list(movieList)
+
+    for x in hd:
+        print(x.title)
