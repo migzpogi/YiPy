@@ -1,5 +1,13 @@
 import feedparser
 import re
+from jinja2 import Environment, FileSystemLoader
+
+TEMPLATE_ENVIRONMENT = Environment(
+    autoescape=False,
+    loader=FileSystemLoader('./email'),
+    trim_blocks=False
+)
+
 
 class Movie(object):
     """
@@ -43,6 +51,32 @@ class Movie(object):
 
         # download link
         self.downloadlink = self.movie.links[1]['href']
+
+
+def render_template(template_filename, context):
+    """
+    Reads the template.html file which is how the email notification would look like
+    :param template_filename:
+    :param context:
+    :return:
+    """
+
+    return TEMPLATE_ENVIRONMENT.get_template(template_filename).render(context)
+
+
+def create_index_html(movie_list):
+    """
+    Created the index.html which is the body of the email notification
+    :param movie_list:
+    :return:
+    """
+    context = {
+        'response': movie_list
+    }
+
+    with open('./email/index.html', 'w') as f:
+        html = render_template('template.html', context)
+        f.write(html.encode('utf-8'))
 
 
 def load_rss(rss_feed):
@@ -90,3 +124,5 @@ if __name__ == '__main__':
 
     for x in hd:
         print(x.title)
+
+    create_index_html(hd)
