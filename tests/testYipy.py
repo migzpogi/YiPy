@@ -11,5 +11,3 @@ class TestYipyMain(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-# TODO exclude sample.xml in git push
