@@ -1,12 +1,31 @@
+from ConfigParser import SafeConfigParser
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import feedparser
-import re
 from jinja2 import Environment, FileSystemLoader
+import re
+import smtplib
+
 
 TEMPLATE_ENVIRONMENT = Environment(
     autoescape=False,
     loader=FileSystemLoader('./email'),
     trim_blocks=False
 )
+
+
+class Config(object):
+    """
+    Object representation of the config file
+    """
+
+    def __init__(self, config):
+        self.config = config
+        self.smtpuser = self.config.get('smtp', 'username')
+        self.smtppass = self.config.get('smtp', 'password')
+        self.emailfrom = self.config.get('email', 'from')
+        self.emailto = self.config.get('email', 'to')
+        self.emailsubject = self.config.get('email', 'subject')
 
 
 class Movie(object):
@@ -51,6 +70,36 @@ class Movie(object):
 
         # download link
         self.downloadlink = self.movie.links[1]['href']
+
+
+def send_email(config_object):
+    """
+    Sends the email notification
+    :return:
+    """
+
+    config_object = Config(config_object)
+
+    msg = MIMEMultipart('alternative')
+    msg['From'] = config_object.emailfrom
+    msg['To'] = config_object.emailto
+    msg['Subject'] = config_object.emailsubject
+
+    with open('./email/index.html', 'r') as f:
+        html = f.read()
+
+    attch = MIMEText(html, 'html')
+    msg.attach(attch)
+
+    try:
+        e = smtplib.SMTP('smtp.gmail.com', 587)
+        e.starttls()
+        e.login(config_object.smtpuser, config_object.smtppass)
+        e.sendmail(config_object.emailfrom, config_object.emailto, msg.as_string())
+        e.quit()
+        print "Email sent"
+    except:
+        print "Email not sent"
 
 
 def render_template(template_filename, context):
@@ -118,11 +167,21 @@ def filter_movie_list(movie_list, quality='1080p'):
     return filtered_list
 
 if __name__ == '__main__':
+    # load config
+    config = SafeConfigParser()
+    config.read('./config/settings.ini')
+
+    # load the rss feed
     ytsRSS = load_rss('https://yts.ag/rss')
+
+    # create a movie list that is 1080p in quality
     movieList = generate_movie_list(ytsRSS)
     hd = filter_movie_list(movieList)
 
     for x in hd:
         print(x.title)
 
-    create_index_html(hd)
+    # # send email
+    # create_index_html(hd)
+    send_email(config)
+
