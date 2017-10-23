@@ -3,15 +3,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import feedparser
 from jinja2 import Environment, FileSystemLoader
+import logging.config
 import re
 import smtplib
 
 
-TEMPLATE_ENVIRONMENT = Environment(
-    autoescape=False,
-    loader=FileSystemLoader('./email'),
-    trim_blocks=False
-)
 
 
 class Config(object):
@@ -110,6 +106,13 @@ def render_template(template_filename, context):
     :return:
     """
 
+    # location of the template file
+    TEMPLATE_ENVIRONMENT = Environment(
+        autoescape=False,
+        loader=FileSystemLoader('./email'),
+        trim_blocks=False
+    )
+
     return TEMPLATE_ENVIRONMENT.get_template(template_filename).render(context)
 
 
@@ -167,21 +170,34 @@ def filter_movie_list(movie_list, quality='1080p'):
     return filtered_list
 
 if __name__ == '__main__':
+    # initialize logging
+    log = logging.getLogger("YiPy")
+    logging.config.fileConfig(
+        disable_existing_loggers=False,
+        fname='./log/logconfig.ini',
+        defaults={'logfilename': './log/yipytrace.log'})
+
+    log.info('Application started...')
+
     # load config
     config = SafeConfigParser()
     config.read('./config/settings.ini')
 
+    log.info('Config file loaded...')
+
     # load the rss feed
     ytsRSS = load_rss('https://yts.ag/rss')
+
+    log.info('Parsing RSS feed...')
 
     # create a movie list that is 1080p in quality
     movieList = generate_movie_list(ytsRSS)
     hd = filter_movie_list(movieList)
 
     for x in hd:
-        print(x.title)
+        log.info(x.title)
 
     # # send email
     # create_index_html(hd)
-    send_email(config)
+    # send_email(config)
 
