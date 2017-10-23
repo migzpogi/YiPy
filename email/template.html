@@ -8,11 +8,13 @@
             font-family: 'Roboto', sans-serif;
         }
         li{
-            list-style-type: none;
             font-family: "Roboto", sans-serif;
         }
         th{
             font-family: "Tahoma";
+        }
+        td{
+            font-family: "Slabo 27px", serif;
         }
     </style>
 
@@ -23,7 +25,15 @@
     {% set ctr=0 %}
     {% for x in response %}
         {% if ctr is divisibleby 2 %}{% set color='#E6E6FA'%}{% else %}{% set color='#FFFFFF' %}{% endif %}
-    <li>{{x['title']}}</li>
+    <li><b>{{x['cleantitle']}}</b></li>
+    <table>
+        <tr>
+            <td>
+                {{x['summary']}}
+            </td>
+        </tr>
+    </table>
+    <br><hr><br>
     {% set ctr = ctr+1 %}
     {% endfor %}
 </ul>

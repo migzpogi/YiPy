@@ -8,8 +8,6 @@ import re
 import smtplib
 
 
-
-
 class Config(object):
     """
     Object representation of the config file
@@ -41,6 +39,9 @@ class Movie(object):
 
         # title
         self.title = self.movie.title
+
+        # clean title: strips the quality part section of the title
+        self.cleantitle = self.title[:-8]
 
         # quality
         if '[720p]' in self.title:
@@ -177,27 +178,26 @@ if __name__ == '__main__':
         fname='./log/logconfig.ini',
         defaults={'logfilename': './log/yipytrace.log'})
 
-    log.info('Application started...')
+    log.info('YiPy started...')
 
     # load config
     config = SafeConfigParser()
     config.read('./config/settings.ini')
 
-    log.info('Config file loaded...')
-
     # load the rss feed
-    ytsRSS = load_rss('https://yts.ag/rss')
-
     log.info('Parsing RSS feed...')
+    ytsRSS = load_rss('https://yts.ag/rss')
+    log.info('RSS feed parsed...')
 
     # create a movie list that is 1080p in quality
+    log.info("Listing recent uploads with 1080p resolution...")
     movieList = generate_movie_list(ytsRSS)
     hd = filter_movie_list(movieList)
 
-    for x in hd:
-        log.info(x.title)
+    for movies in hd:
+        log.info(movies.cleantitle)
 
     # # send email
-    # create_index_html(hd)
+    create_index_html(hd)
     # send_email(config)
 
