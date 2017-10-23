@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from ConfigParser import SafeConfigParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -6,6 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 import logging.config
 import re
 import smtplib
+import time
 
 
 class Config(object):
@@ -189,15 +191,21 @@ if __name__ == '__main__':
     ytsRSS = load_rss('https://yts.ag/rss')
     log.info('RSS feed parsed...')
 
-    # create a movie list that is 1080p in quality
-    log.info("Listing recent uploads with 1080p resolution...")
-    movieList = generate_movie_list(ytsRSS)
-    hd = filter_movie_list(movieList)
+    while(True):
+        # create a movie list that is 1080p in quality
+        log.info("Listing recent uploads with 1080p resolution...")
+        movieList = generate_movie_list(ytsRSS)
+        hd = filter_movie_list(movieList)
 
-    for movies in hd:
-        log.info(movies.cleantitle)
+        for movies in hd:
+            log.info(movies.cleantitle)
+
+        log.info('Waiting for next refresh...')
+
+        time.sleep(10)
+
 
     # # send email
-    create_index_html(hd)
+    # create_index_html(hd)
     # send_email(config)
 

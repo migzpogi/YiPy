@@ -1,0 +1,42 @@
+from: can't read /var/mail/ConfigParser
+from: can't read /var/mail/email.mime.multipart
+from: can't read /var/mail/email.mime.text
+./YiPyMain.py: line 4: import: command not found
+from: can't read /var/mail/jinja2
+./YiPyMain.py: line 6: import: command not found
+./YiPyMain.py: line 7: import: command not found
+./YiPyMain.py: line 8: import: command not found
+./YiPyMain.py: line 9: import: command not found
+./YiPyMain.py: line 12: syntax error near unexpected token `('
+./YiPyMain.py: line 12: `class Config(object):'
+2017-10-23 11:09:36,067 - MainThread - YiPy - INFO - YiPy started...
+2017-10-23 11:09:36,068 - MainThread - YiPy - INFO - Parsing RSS feed...
+2017-10-23 11:09:41,630 - MainThread - YiPy - INFO - RSS feed parsed...
+2017-10-23 11:09:41,630 - MainThread - YiPy - INFO - Listing recent uploads with 1080p resolution...
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - The Emoji Movie (2017)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - Northpole: Open for Christmas (2015)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - The Flamingo Kid (1984)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - Armed Response (2017)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - A Very Sordid Wedding (2017)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - Manifesto (2015)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - Maudie (2016)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - Open Water 3: Cage Dive (2017)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - War for the Planet of the Apes (2017)
+2017-10-23 11:09:41,631 - MainThread - YiPy - INFO - Pressure (2015)
+2017-10-23 11:09:41,632 - MainThread - YiPy - INFO - Waiting for next refresh...
+2017-10-23 11:09:51,635 - MainThread - YiPy - INFO - Listing recent uploads with 1080p resolution...
+2017-10-23 11:09:51,636 - MainThread - YiPy - INFO - The Emoji Movie (2017)
+2017-10-23 11:09:51,636 - MainThread - YiPy - INFO - Northpole: Open for Christmas (2015)
+2017-10-23 11:09:51,636 - MainThread - YiPy - INFO - The Flamingo Kid (1984)
+2017-10-23 11:09:51,636 - MainThread - YiPy - INFO - Armed Response (2017)
+2017-10-23 11:09:51,636 - MainThread - YiPy - INFO - A Very Sordid Wedding (2017)
+2017-10-23 11:09:51,637 - MainThread - YiPy - INFO - Manifesto (2015)
+2017-10-23 11:09:51,637 - MainThread - YiPy - INFO - Maudie (2016)
+2017-10-23 11:09:51,637 - MainThread - YiPy - INFO - Open Water 3: Cage Dive (2017)
+2017-10-23 11:09:51,637 - MainThread - YiPy - INFO - War for the Planet of the Apes (2017)
+2017-10-23 11:09:51,637 - MainThread - YiPy - INFO - Pressure (2015)
+2017-10-23 11:09:51,637 - MainThread - YiPy - INFO - Waiting for next refresh...
+Traceback (most recent call last):
+  File "./YiPyMain.py", line 205, in <module>
+    time.sleep(10)
+KeyboardInterrupt
