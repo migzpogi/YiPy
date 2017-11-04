@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import feedparser
@@ -96,9 +96,9 @@ def send_email(config_object):
         e.login(config_object.smtpuser, config_object.smtppass)
         e.sendmail(config_object.emailfrom, config_object.emailto, msg.as_string())
         e.quit()
-        print "Email sent"
+        print("Email sent")
     except:
-        print "Email not sent"
+        print("Email not sent")
 
 
 def render_template(template_filename, context):
