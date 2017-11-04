@@ -2,7 +2,7 @@
 
 `Updated: Oct 20 2017`
 
-This project gets the most recent movie uploads from YTS via RSS feed. Of course, you could just subscribe using that but where's the fun in that?
+This application gets the most recent movie uploads from YTS via RSS feed. Of course, you could just subscribe using that but where's the fun in that?
 
 ## Getting Started
 
