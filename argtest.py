@@ -12,6 +12,19 @@ def determine_modes(args):
     print args.file_status
     print args.email_status
 
+
+def print_ascii():
+    print("""
+ _     _ _____ ______  _     _ 
+| |   | (_____|_____ \| |   | |
+| |___| |  _   _____) ) |___| |
+ \_____/  | | |  ____/ \_____/ 
+   ___   _| |_| |        ___   
+  (___) (_____)_|       (___)  
+
+  Version 1.0                         
+    """)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="Please choose from the following modes:")
@@ -26,6 +39,8 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         args = parser.parse_args()
         determine_modes(args)
+        print_ascii()
+
     else:
         parser.print_help()
         parser.exit()
