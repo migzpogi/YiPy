@@ -115,9 +115,10 @@ def generate_movie_list(yts_rss):
     return movie_list
 
 
-def filter_movie_list(movie_list, quality='1080p'):
+def filter_movie_list(movie_list, quality):
     """
     Filters the given movie list according to the passed parameters
+    :param movie_list
     :param quality:
     :return:
     """
@@ -140,10 +141,11 @@ def mode_console(parsed_rss):
     log.info('Running YiPy in Console Mode')
     log.info('***** RECENT UPLOADS START *****')
 
-    movie_list = filter_movie_list(generate_movie_list(parsed_rss))
+    movie_list = generate_movie_list(parsed_rss)
+    filtered = filter_movie_list(movie_list, quality=config.get('filters', 'quality'))
 
-    for movies in movie_list:
-        log.info(movies.cleantitle)
+    for movies in filtered:
+        log.info(movies.cleantitle + ' -- ' + movies.imdb)
 
     log.info('***** RECENT UPLOADS END *****')
 
@@ -155,11 +157,6 @@ def run_commands(args):
     :return:
     """
 
-    # load config
-    config = ConfigParser()
-    config.read('./config/settings.ini')
-    log.info('Config loaded. Parsing the RSS feed...')
-
     # load the rss feed
     ytsRSS = load_rss(config.get('rssfeed', 'rss'))
 
@@ -169,7 +166,7 @@ def run_commands(args):
         print "File Mode"
     if args.email_status:
         print "Email mode"
-        
+
 
 if __name__ == '__main__':
     # initialize logging
@@ -179,6 +176,11 @@ if __name__ == '__main__':
         fname='./log/logconfig.ini',
         defaults={'logfilename': './log/yipytrace.log'})
     log.info('YiPy started. Reading config...')
+
+    # load config
+    config = ConfigParser()
+    config.read('./config/settings.ini')
+    log.info('Config loaded. Parsing the RSS feed...')
 
     # get the passed arguments
     parser = argparse.ArgumentParser(
