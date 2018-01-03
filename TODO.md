@@ -4,3 +4,4 @@
 - Config file creator
 - Read about GitHub releases
 - As a service
+- IMDB Filter

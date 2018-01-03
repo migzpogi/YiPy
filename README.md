@@ -1,8 +1,14 @@
 # YiPy
 
-`Updated: Oct 20 2017`
+`Updated: Jan 03 2018`
 
 This application gets the most recent movie uploads from YTS via RSS feed. Of course, you could just subscribe using that but where's the fun in that?
+
+## Quick Start
+
+YiPy can be ran immediately. Open up a terminal where YiPy is located and run `python YiPyMain.py -c`
+
+This will display the recent uploads in your terminal.
 
 ## Getting Started
 
