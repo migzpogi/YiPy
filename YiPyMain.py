@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 from configparser import SafeConfigParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -6,6 +7,7 @@ import feedparser
 from jinja2 import Environment, FileSystemLoader
 import logging.config
 import re
+import sys
 import smtplib
 import time
 
@@ -129,7 +131,7 @@ def create_index_html(movie_list):
         'response': movie_list
     }
 
-    with open('./email/index.html', 'w') as f:
+    with open('./email/index.html', 'wb') as f:
         html = render_template('template.html', context)
         f.write(html.encode('utf-8'))
 
@@ -173,39 +175,48 @@ def filter_movie_list(movie_list, quality='1080p'):
     return filtered_list
 
 if __name__ == '__main__':
-    # initialize logging
-    log = logging.getLogger("YiPy")
-    logging.config.fileConfig(
-        disable_existing_loggers=False,
-        fname='./log/logconfig.ini',
-        defaults={'logfilename': './log/yipytrace.log'})
+    parser = argparse.ArgumentParser(description='Welcome to YiPy, an application that gets the most recent updates '
+                                                 'of YTS. Chooose from the following modes below:')
 
-    log.info('YiPy started...')
+    parser.add_argument('-c', '--comandline', action='store_true', default=True, dest='bool_cli', help='Hello')
 
-    # load config
-    config = SafeConfigParser()
-    config.read('./config/settings.ini')
+    results = parser.parse_args()
 
-    # load the rss feed
-    log.info('Parsing RSS feed...')
-    ytsRSS = load_rss('https://yts.ag/rss')
-    log.info('RSS feed parsed...')
+    print(results.bool_cli)
 
-    while(True):
-        # create a movie list that is 1080p in quality
-        log.info("Listing recent uploads with 1080p resolution...")
-        movieList = generate_movie_list(ytsRSS)
-        hd = filter_movie_list(movieList)
+    # display argparse help if no argument is passed
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
 
-        for movies in hd:
-            log.info(movies.cleantitle)
-
-        log.info('Waiting for next refresh...')
-
-        time.sleep(10)
-
-
+    # # initialize logging
+    # log = logging.getLogger("YiPy")
+    # logging.config.fileConfig(
+    #     disable_existing_loggers=False,
+    #     fname='./log/logconfig.ini',
+    #     defaults={'logfilename': './log/yipytrace.log'})
+    #
+    # log.info('YiPy started...')
+    #
+    # # load config
+    # config = SafeConfigParser()
+    # config.read('./config/settings.ini')
+    #
+    # # load the rss feed
+    # log.info('Parsing RSS feed...')
+    # ytsRSS = load_rss('https://yts.ag/rss')
+    # log.info('RSS feed parsed...')
+    #
+    # # create a movie list that is 1080p in quality
+    # log.info("Listing recent uploads with 1080p resolution...")
+    # movieList = generate_movie_list(ytsRSS)
+    # hd = filter_movie_list(movieList)
+    #
+    # for movies in hd:
+    #     log.info(movies.cleantitle)
+    #
+    #
     # # send email
     # create_index_html(hd)
-    # send_email(config)
+    # # send_email(config)
 
