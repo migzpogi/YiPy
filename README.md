@@ -1,8 +1,12 @@
 # YiPy
 
-`Updated: Oct 20 2017`
+`Updated: Jan 03 2018`
 
 This application gets the most recent movie uploads from YTS via RSS feed. Of course, you could just subscribe using that but where's the fun in that?
+
+[TOC]
+
+
 
 ## Getting Started
 
