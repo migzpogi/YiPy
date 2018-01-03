@@ -10,6 +10,14 @@ def run_commands(args):
     :param args:
     :return:
     """
+    
+    # load config
+    config = ConfigParser()
+    config.read('./config/settings.ini')
+    log.info('Config loaded. Parsing the RSS feed...')
+
+    # load the rss feed
+    ytsRSS = load_rss('https://yts.ag/rss')
 
     if args.console_status:
         print "Console Mode"
@@ -59,14 +67,7 @@ if __name__ == '__main__':
         defaults={'logfilename': './log/yipytrace.log'})
     log.info('YiPy started. Reading config...')
 
-    # load config
-    config = ConfigParser()
-    config.read('./config/settings.ini')
-    log.info('Config loaded. Parsing the RSS feed...')
-
-    # load the rss feed
-    ytsRSS = load_rss('https://yts.ag/rss')
-
+    # get the passed arguments
     parser = argparse.ArgumentParser(
         description="Please choose from the following modes:")
 
