@@ -4,6 +4,10 @@ import logging.config
 from ConfigParser import ConfigParser
 import feedparser
 import re
+from jinja2 import Environment, FileSystemLoader
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 
 
 class Config(object):
@@ -131,6 +135,76 @@ def filter_movie_list(movie_list, quality):
     return filtered_list
 
 
+def render_template(template_filename, context):
+    """
+    Reads the template.html file which is how the email notification would look like
+    :param template_filename:
+    :param context:
+    :return:
+    """
+
+    # location of the template file
+    TEMPLATE_ENVIRONMENT = Environment(
+        autoescape=False,
+        loader=FileSystemLoader('./email'),
+        trim_blocks=False
+    )
+
+    return TEMPLATE_ENVIRONMENT.get_template(template_filename).render(context)
+
+
+def create_index_html(movie_list):
+    """
+    Created the index.html which is the body of the email notification
+    :param movie_list:
+    :return:
+    """
+
+    log.info('Creating HTML file...')
+
+    context = {
+        'response': movie_list
+    }
+
+    with open('./email/index.html', 'w') as f:
+        html = render_template('template.html', context)
+        f.write(html.encode('utf-8'))
+
+    log.info('HTML file created!')
+
+
+def send_email(config_object):
+    """
+    Sends the email notification
+    :return:
+    """
+
+    log.info('Sending email...')
+
+    config_object = Config(config_object)
+
+    msg = MIMEMultipart('alternative')
+    msg['From'] = config_object.emailfrom
+    msg['To'] = config_object.emailto
+    msg['Subject'] = config_object.emailsubject
+
+    with open('./email/index.html', 'r') as f:
+        html = f.read()
+
+    attch = MIMEText(html, 'html')
+    msg.attach(attch)
+
+    try:
+        e = smtplib.SMTP('smtp.gmail.com', 587)
+        e.starttls()
+        e.login(config_object.smtpuser, config_object.smtppass)
+        e.sendmail(config_object.emailfrom, config_object.emailto, msg.as_string())
+        e.quit()
+        log.info("Email sent!")
+    except:
+        log.info("Email not sent!")
+
+
 def mode_console(parsed_rss):
     """
 
@@ -138,7 +212,7 @@ def mode_console(parsed_rss):
     :return:
     """
 
-    log.info('Running YiPy in Console Mode')
+    log.info('Running YiPy in Console Mode...')
     log.info('***** RECENT UPLOADS START *****')
 
     movie_list = generate_movie_list(parsed_rss)
@@ -148,6 +222,33 @@ def mode_console(parsed_rss):
         log.info(movies.cleantitle + ' -- ' + movies.imdb)
 
     log.info('***** RECENT UPLOADS END *****')
+
+
+def mode_file(parsed_rss):
+    """
+
+    :param parsed_rss:
+    :return:
+    """
+
+    log.info('Running YiPy in File Mode...')
+    log.info('Future feature!')
+
+
+def mode_email(parsed_rss):
+    """
+
+    :param parsed_rss:
+    :return:
+    """
+
+    log.info('Running YiPy in Email Mode...')
+
+    movie_list = generate_movie_list(parsed_rss)
+    filtered = filter_movie_list(movie_list, quality=config.get('filters', 'quality'))
+
+    create_index_html(filtered)
+    send_email(config)
 
 
 def run_commands(args):
@@ -163,9 +264,11 @@ def run_commands(args):
     if args.console_status:
         mode_console(ytsRSS)
     if args.file_status:
-        print "File Mode"
+        mode_file(ytsRSS)
     if args.email_status:
-        print "Email mode"
+        mode_email(ytsRSS)
+
+    log.info('Thanks for using YiPy!')
 
 
 if __name__ == '__main__':
