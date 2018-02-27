@@ -174,20 +174,37 @@ def filter_movie_list(movie_list, quality='1080p'):
 
     return filtered_list
 
+
+def __handle_args():
+    """
+    Handles the arguments passed by the user. Used mainly for mode selection.
+    :return: argParse.ArgumentParser()
+    """
+    parser = argparse.ArgumentParser(
+        description='Welcome to YiPy, an application that gets the most recent updates '
+                    'of YTS. Chooose from the following modes below:')
+
+    parser.add_argument('-c', '--comandline', action='store_true', default=True,
+                        dest='bool_cli', help='Displays the output in the command line '
+                                              'interface.')
+
+    return parser
+
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Welcome to YiPy, an application that gets the most recent updates '
-                                                 'of YTS. Chooose from the following modes below:')
-
-    parser.add_argument('-c', '--comandline', action='store_true', default=True, dest='bool_cli', help='Hello')
-
+    parser = __handle_args()
     results = parser.parse_args()
-
-    print(results.bool_cli)
 
     # display argparse help if no argument is passed
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
+
+    # mode checking
+    cli_mode = results.bool_cli
+
+    if(cli_mode):
+        print("CLI MODE")
 
     # # initialize logging
     # log = logging.getLogger("YiPy")
