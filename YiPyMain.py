@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import argparse
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import feedparser
@@ -175,6 +175,23 @@ def filter_movie_list(movie_list, quality='1080p'):
     return filtered_list
 
 
+def __print_ascii():
+    """
+    Prints an ASCII art of the project name
+    :return:
+    """
+    print("""
+ _     _ _____ ______  _     _ 
+| |   | (_____|_____ \| |   | |
+| |___| |  _   _____) ) |___| |
+ \_____/  | | |  ____/ \_____/ 
+   ___   _| |_| |        ___   
+  (___) (_____)_|       (___)  
+
+  Version 1.0.0                         
+    """)
+
+
 def __handle_args():
     """
     Handles the arguments passed by the user. Used mainly for mode selection.
@@ -184,14 +201,91 @@ def __handle_args():
         description='Welcome to YiPy, an application that gets the most recent updates '
                     'of YTS. Chooose from the following modes below:')
 
-    parser.add_argument('-c', '--comandline', action='store_true', default=True,
+    parser.add_argument('-c', '--comandline', action='store_true', default=False,
                         dest='bool_cli', help='Displays the output in the command line '
                                               'interface.')
+
+    parser.add_argument('-f', '--file', action='store_true', default=False,
+                        dest='bool_file', help='Writes the output in a text file.')
+
+    parser.add_argument('-e', '--email', action='store_true', default=False,
+                        dest='bool_email', help='Sends the output ito an email address.')
 
     return parser
 
 
+def __init_logging():
+    """
+    Initialize logging function.
+    :return: logging.getLogger()
+    """
+
+    log = logging.getLogger("YiPy")
+    logging.config.fileConfig(
+        disable_existing_loggers=False,
+        fname='./log/logconfig.ini',
+        defaults={'logfilename': './log/yipytrace.log'})
+
+    return log
+
+def __init_config():
+    """
+    Initialize config function
+    :return: ConfigParser()
+    """
+
+    config = ConfigParser()
+    config.read('./config/settings.ini')
+
+    return config
+
+
+def __run_cli_mode():
+    """
+    Runs the CLI mode of the application which displays the output on the command line
+    interface
+    :return:
+    """
+
+    logger.info("CLI MODE")
+
+    ytsRSS = load_rss(cfg.get('rssfeed', 'rss'))
+    movie_list = generate_movie_list(ytsRSS)
+    filtered = filter_movie_list(movie_list, quality=cfg.get('filters', 'quality'))
+
+    for movies in filtered:
+        logger.info(movies.cleantitle + '---' + movies.imdb)
+
+def __run_file_mode():
+    """
+    Runs the File mode of the application which writes the output on a text file
+    :return:
+    """
+
+    logger.info("FILE MODE -- Coming Soon!")
+
+
+def __run_email_mode():
+    """
+    Runs the Email mode of the application which sends the output to an email address
+    :return:
+    """
+
+    logger.info("EMAIL MODE -- Coming Soon!")
+
+
 if __name__ == '__main__':
+
+    # show ascii art
+    __print_ascii()
+
+    # initialize logging
+    logger = __init_logging()
+
+    # initialize config
+    cfg = __init_config()
+
+    # initialize argument parser
     parser = __handle_args()
     results = parser.parse_args()
 
@@ -202,16 +296,17 @@ if __name__ == '__main__':
 
     # mode checking
     cli_mode = results.bool_cli
+    file_mode = results.bool_file
+    email_mode = results.bool_email
 
-    if(cli_mode):
-        print("CLI MODE")
+    if cli_mode:
+        __run_cli_mode()
+    if file_mode:
+        __run_file_mode()
+    if email_mode :
+        __run_email_mode()
 
-    # # initialize logging
-    # log = logging.getLogger("YiPy")
-    # logging.config.fileConfig(
-    #     disable_existing_loggers=False,
-    #     fname='./log/logconfig.ini',
-    #     defaults={'logfilename': './log/yipytrace.log'})
+
     #
     # log.info('YiPy started...')
     #
