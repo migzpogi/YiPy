@@ -254,7 +254,7 @@ def __run_cli_mode():
     filtered = filter_movie_list(movie_list, quality=cfg.get('filters', 'quality'))
 
     for movies in filtered:
-        logger.info(movies.cleantitle + '---' + movies.imdb) 
+        logger.info(movies.cleantitle + '---' + movies.imdb)
 
 def __run_file_mode():
     """
